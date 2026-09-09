@@ -18,6 +18,18 @@ npm start
 `npm start` melakukan build lalu menyalakan server di `http://localhost:8011`.
 Buka di **Chrome**, izinkan akses kamera saat diminta.
 
+## GitHub Pages
+
+Setelah workflow **Deploy GitHub Pages** selesai pada branch `main`, deck tersedia
+di `https://himiko-lab.github.io/thermal-and-statistical-physics/`.
+Deployment dibangun ulang otomatis setiap kali ada push ke `main`; workflow juga
+bisa dijalankan manual dari tab **Actions**. Di repository settings, pilih
+**Settings → Pages → Source: GitHub Actions** bila belum terpilih.
+
+GitHub Pages menggunakan HTTPS, sehingga hand tracking dapat meminta akses kamera
+seperti saat dijalankan lewat `localhost`. Izin kamera tetap harus diberikan di
+browser untuk domain GitHub Pages tersebut.
+
 Kalau sudah pernah build dan hanya ingin menyalakan servernya:
 
 ```bash
