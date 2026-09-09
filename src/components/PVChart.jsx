@@ -49,21 +49,26 @@ export default function PVChart({ gamma = 1.4, play = true, showAdiabat = true, 
           transition: 'stroke-dashoffset 1150ms var(--ease)',
         }}
       />
-      {showAdiabat ? (
-        <path
-          d={adi}
-          fill="none"
-          stroke="var(--gold)"
-          strokeWidth="3"
-          strokeLinecap="round"
-          pathLength="1"
-          strokeDasharray="1"
-          style={{
-            strokeDashoffset: showAdiabat ? 0 : 1,
-            transition: 'stroke-dashoffset 1150ms var(--ease)',
-          }}
-        />
-      ) : null}
+      {/* Selalu ada di DOM. Kalau path-nya baru dibuat saat showAdiabat
+          menyala, ia lahir langsung dalam keadaan tergambar penuh sehingga
+          tidak ada keadaan awal untuk ditransisikan, dan kurvanya cuma
+          muncul begitu saja. Yang berubah cukup dashoffset-nya. */}
+      <path
+        d={adi}
+        fill="none"
+        stroke="var(--gold)"
+        strokeWidth="3"
+        strokeLinecap="round"
+        pathLength="1"
+        strokeDasharray="1"
+        style={{
+          strokeDashoffset: showAdiabat ? 0 : 1,
+          // Jeda kecil supaya kurva adiabatik mulai tergambar setelah yang
+          // isotermal hampir selesai, sehingga urutannya terbaca sebagai
+          // perbandingan, bukan dua garis yang muncul bersamaan.
+          transition: 'stroke-dashoffset 1150ms var(--ease) 300ms',
+        }}
+      />
 
       {/* titik awal bersama */}
       <circle
@@ -85,18 +90,16 @@ export default function PVChart({ gamma = 1.4, play = true, showAdiabat = true, 
       >
         isotermal
       </text>
-      {showAdiabat ? (
-        <text
-          x={x(3.3)}
-          y={y(P0 / Math.pow(3.3, gamma)) + 30}
-          fill="var(--gold)"
-          fontSize="17"
-          fontWeight="500"
-          style={{ opacity: showAdiabat ? 1 : 0, transition: 'opacity 520ms var(--ease) 900ms' }}
-        >
-          adiabatik
-        </text>
-      ) : null}
+      <text
+        x={x(3.3)}
+        y={y(P0 / Math.pow(3.3, gamma)) + 30}
+        fill="var(--gold)"
+        fontSize="17"
+        fontWeight="500"
+        style={{ opacity: showAdiabat ? 1 : 0, transition: 'opacity 520ms var(--ease) 900ms' }}
+      >
+        adiabatik
+      </text>
     </svg>
   );
 }
