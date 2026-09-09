@@ -214,10 +214,32 @@ Ada dua cara menunda kemunculan, dan keduanya tidak menambah klik:
 
 Penomoran slide, bar progres, dan navigasi menyesuaikan sendiri.
 
+### Melengkapi sitasi
+
+`SUMBER` di bagian atas `src/content/slides.jsx` masih memuat penanda
+`LENGKAPI:` untuk judul lengkap, edisi, tahun, penerbit, dan rentang halaman.
+Isi dengan data sebenarnya dari buku yang kalian pakai. Penandanya sengaja
+dibuat terlihat di slide penutup supaya tidak terlewat, karena sitasi yang
+tidak bisa ditelusuri lebih merugikan daripada sitasi yang singkat.
+
+### Syarat berlakunya rumus
+
+Komponen `<Syarat>` menempelkan batas berlaku langsung di slide, bukan hanya di
+catatan presenter, karena penilai membaca slide dan PDF-nya. Sudah dipakai di
+empat tempat: turunan `dH = dQ`, kapasitas panas molar, selisih `CP` dan `CV`,
+serta `PV^γ = konstan`.
+
 ### Catatan presenter
 
 `src/content/notes.js`, satu entri per `id` slide. Tekan `N` saat presentasi
 untuk membukanya di jendela terpisah, lengkap dengan timer dan target durasi.
+
+Total target seluruh catatan saat ini **22,7 menit**, belum termasuk jeda
+animasi dan tanya jawab. Kalau alokasinya 15 menit, yang paling layak dipangkas
+adalah empat entri terpanjang: `turunan` (120 detik), `adiabatik` (115),
+`kenapa` (110), dan `kasus` (105). Angka `target` di tiap entri boleh diubah
+bebas; ia hanya menggerakkan pengingat di jendela catatan, tidak memengaruhi
+deck.
 
 > Layar harus **extended**, bukan mirrored. System Settings, Displays, matikan
 > "Mirror Displays". Taruh jendela deck di proyektor lalu tekan `F`, dan jendela
@@ -245,7 +267,7 @@ src/
   styles.css              tema, animasi, dan aturan cetak
   fonts/                  Poppins subset latin, di-bundle sendiri
   content/
-    slides.jsx            isi 15 slide
+    slides.jsx            isi 16 slide
     notes.js              catatan presenter per slide
   components/
     Formula.jsx           rumus sebagai exploded view

@@ -25,6 +25,31 @@ import PVChart from '../components/PVChart.jsx';
 
 const ANGGOTA = ['Ara Ayesha Putri Asnan', 'Khanum Aditiya Putra', 'Ramdhan Rizka Fakhresi'];
 
+/**
+ * Sumber materi. Isi yang bertanda LENGKAPI dengan data sebenarnya dari buku
+ * yang kalian pakai; jangan dibiarkan, karena sitasi yang tidak bisa
+ * ditelusuri justru merugikan saat dinilai.
+ */
+const SUMBER = {
+  penulis: 'Sandeep Sharma',
+  judul: 'LENGKAPI: judul lengkap buku',
+  edisi: 'LENGKAPI: edisi',
+  tahun: 'LENGKAPI: tahun terbit',
+  penerbit: 'LENGKAPI: penerbit',
+  bab: 'Bab 2, Heat Capacities and Thermodynamic Processes',
+  halaman: 'LENGKAPI: rentang halaman',
+};
+
+const Unit = ({ children }) => (
+  <span style={{ fontFamily: 'var(--font-ui)', fontSize: '0.52em', color: 'var(--ink-3)', marginLeft: '0.4em' }}>
+    {children}
+  </span>
+);
+
+const Syarat = ({ children }) => (
+  <p className="syarat"><b>Syarat</b><span>{children}</span></p>
+);
+
 const Names = () => (
   <div className="names">
     {ANGGOTA.map((n) => <span key={n}>{n}</span>)}
@@ -115,7 +140,10 @@ const definisi = {
   render: ({ step, phase, no, total }) => (
     <>
       <SlideHead eyebrow="01 · Fondasi" no={no} total={total} />
-      <h2 className="h2">Kapasitas panas itu respons, bukan konstanta</h2>
+      <h2 className="h2">Bukan satu nilai universal</h2>
+      <p className="tiny" style={{ marginTop: -4 }}>
+        Nilainya bergantung pada keadaan sistem dan pada proses yang dijalaninya.
+      </p>
 
       <Formula
         size={70}
@@ -212,11 +240,12 @@ const sifat = {
 
         <Reveal at={1} step={step} delay={200} className="stack">
           <div className="tag tag--plain">Intensif</div>
-          <div className="eq gold" style={{ fontSize: 58, margin: '4px 0 20px' }}>
-            <V>c</V><sub style={{ fontSize: '0.5em' }}>v</sub>, <V>c</V><sub style={{ fontSize: '0.5em' }}>p</sub>
+          <div className="eq gold" style={{ fontSize: 44, margin: '4px 0 14px', lineHeight: 1.5 }}>
+            <div><V>C</V><sub style={{ fontSize: '0.5em' }}>m</sub> = <V>C</V>/<V>n</V><Unit>J mol⁻¹ K⁻¹</Unit></div>
+            <div><V>c</V> = <V>C</V>/<V>m</V><Unit>J kg⁻¹ K⁻¹</Unit></div>
           </div>
           <p className="lead" style={{ fontSize: 20 }}>
-            Dinormalisasi per satuan massa atau mol. Ciri intrinsik material, lepas dari banyaknya zat.
+            Dinormalisasi per mol atau per satuan massa. Ciri intrinsik material, lepas dari banyaknya zat.
           </p>
         </Reveal>
       </div>
@@ -276,8 +305,8 @@ const turunan = {
       <h2 className="h2">Satu suku yang menghilang</h2>
 
       <Formula
-        size={60}
-        box={284}
+        size={58}
+        box={248}
         exploded={phase >= 1}
         labels={phase >= 2}
         spread={{ x: 118, y: 36 }}
@@ -305,7 +334,7 @@ const turunan = {
         }
       />
 
-      <Reveal at={4} step={phase} style={{ marginTop: 26 }}>
+      <Reveal at={4} step={phase} style={{ marginTop: 14 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 44 }}>
           <div className="eq gold" style={{ fontSize: 54, flex: 'none' }}>
             d<V>H</V> = d<V>Q</V><sub style={{ fontSize: '0.46em' }}>P</sub>
@@ -314,6 +343,9 @@ const turunan = {
             Pada tekanan konstan, kalor yang diserap sistem sama dengan perubahan entalpinya.
           </p>
         </div>
+        <Syarat>
+          sistem tertutup, tekanan konstan, dan satu-satunya kerja adalah <V>P</V>d<V>V</V>.
+        </Syarat>
       </Reveal>
     </>
   ),
@@ -336,7 +368,7 @@ const molar = {
         labels={phase >= 2}
         spread={{ x: 146, y: 36 }}
         terms={[
-          { t: <V>c</V>, dir: [-1.38, -0.42], side: 'up', label: 'Kapasitas panas molar' },
+          { t: <><V>C</V><sub style={{ fontSize: '0.5em' }}>m</sub></>, dir: [-1.38, -0.42], side: 'up', label: 'Kapasitas panas molar, satuan J mol⁻¹ K⁻¹' },
           { t: '=', op: true },
           { t: <Frac a={<V>C</V>} b={<V>n</V>} />, dir: [-0.1, 0.48], side: 'down', label: 'Kapasitas panas total dibagi jumlah mol' },
           { t: '=', op: true },
@@ -351,6 +383,11 @@ const molar = {
             tereliminasi, dan yang tersisa untuk dibandingkan adalah
             <span className="gold"> derajat kebebasan internal molekulnya</span>.
           </p>
+          <Syarat>
+            <V>C</V><sub>m</sub> = <V>C</V>/<V>n</V> dalam J mol⁻¹ K⁻¹, berbeda dari kapasitas panas
+            spesifik <V>c</V> = <V>C</V>/<V>m</V> dalam J kg⁻¹ K⁻¹. Keduanya sama-sama intensif,
+            tetapi patokannya tidak sama.
+          </Syarat>
         </div>
       </Reveal>
     </>
@@ -433,17 +470,97 @@ const kenapa = {
 
           <Reveal at={1} step={step} delay={1150}>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 26, marginTop: 10 }}>
-              <span className="eq gold" style={{ fontSize: 42 }}>
-                <V>C</V><sub style={{ fontSize: '0.5em' }}>P</sub> &gt; <V>C</V><sub style={{ fontSize: '0.5em' }}>V</sub>
+              <span className="eq gold" style={{ fontSize: 40 }}>
+                <V>C</V><sub style={{ fontSize: '0.5em' }}>P</sub> &minus; <V>C</V><sub style={{ fontSize: '0.5em' }}>V</sub> = <V>nR</V>
               </span>
-              <span className="tiny" style={{ maxWidth: '40ch' }}>
-                Berlaku untuk gas ideal maupun gas nyata. Ini konsekuensi kekekalan energi,
-                bukan sifat khusus suatu zat.
+              <span className="tiny" style={{ maxWidth: '38ch' }}>
+                Untuk gas ideal, selisihnya persis <V>nR</V>. Jadi <V>C</V><sub>P</sub> &gt; <V>C</V><sub>V</sub>,
+                dan selisih itu sama dengan kerja ekspansinya.
               </span>
             </div>
           </Reveal>
         </div>
       </div>
+
+      <Reveal at={1} step={step} delay={1400}>
+        <Syarat>
+          untuk zat nyata berlaku <V>C</V><sub>P</sub> &minus; <V>C</V><sub>V</sub> = <V>TVα</V>²/<V>κ</V><sub>T</sub>.
+          Karena <V>κ</V><sub>T</sub> &gt; 0 pada sistem yang stabil, <V>C</V><sub>P</sub> &ge; <V>C</V><sub>V</sub> selalu,
+          dan sama besar hanya bila koefisien muai termalnya nol.
+        </Syarat>
+      </Reveal>
+    </>
+  ),
+};
+
+/* ══════════════════════════════════════════ 9b. contoh hitungan singkat */
+const Hitung = ({ label, rows, accent }) => (
+  <div className="stack" style={accent ? { borderLeftColor: 'var(--gold)' } : undefined}>
+    <div className={accent ? 'tag' : 'tag tag--plain'}>{label}</div>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      {rows.map((r, i) => (
+        <div key={i} className="eq" style={{ fontSize: 25, color: r.kuat ? 'var(--gold)' : undefined }}>
+          {r.t}
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+const contoh = {
+  id: 'contoh',
+  title: 'Contoh hitungan',
+  steps: 2,
+  render: ({ step, no, total }) => (
+    <>
+      <SlideHead eyebrow="03 · Alokasi energi" no={no} total={total} />
+      <h2 className="h2">Diuji dengan angka</h2>
+      <p className="tiny" style={{ marginBottom: 26 }}>
+        1 mol gas ideal <span className="gold">monoatomik</span>, suhunya dinaikkan Δ<V>T</V> = 10 K.
+        Tetapan gas <V>R</V> = 8,314 J mol⁻¹ K⁻¹.
+      </p>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48 }}>
+        <Reveal at={1} step={step}>
+          <Hitung
+            label="Volume tetap"
+            rows={[
+              { t: <><V>C</V><sub style={{ fontSize: '0.5em' }}>V,m</sub> = <sup>3</sup>&frasl;<sub>2</sub><V>R</V> = 12,47</> },
+              { t: <><V>Q</V><sub style={{ fontSize: '0.5em' }}>V</sub> = <V>nC</V><sub style={{ fontSize: '0.5em' }}>V,m</sub>Δ<V>T</V> = 124,7 J</>, kuat: true },
+              { t: <>Δ<V>U</V> = 124,7 J &nbsp;&nbsp; <V>W</V> = 0</> },
+            ]}
+          />
+        </Reveal>
+
+        <Reveal at={1} step={step} delay={240}>
+          <Hitung
+            accent
+            label="Tekanan tetap"
+            rows={[
+              { t: <><V>C</V><sub style={{ fontSize: '0.5em' }}>P,m</sub> = <sup>5</sup>&frasl;<sub>2</sub><V>R</V> = 20,79</> },
+              { t: <><V>Q</V><sub style={{ fontSize: '0.5em' }}>P</sub> = <V>nC</V><sub style={{ fontSize: '0.5em' }}>P,m</sub>Δ<V>T</V> = 207,9 J</>, kuat: true },
+              { t: <>Δ<V>U</V> = 124,7 J &nbsp;&nbsp; <V>W</V> = &minus;83,1 J</> },
+            ]}
+          />
+        </Reveal>
+      </div>
+
+      <Reveal at={1} step={step} delay={620} style={{ marginTop: 24 }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 32 }}>
+          <span className="eq gold" style={{ fontSize: 29, flex: 'none' }}>
+            <V>Q</V><sub style={{ fontSize: '0.5em' }}>P</sub> &minus; <V>Q</V><sub style={{ fontSize: '0.5em' }}>V</sub> = <V>nR</V>Δ<V>T</V> = 83,1 J
+          </span>
+          <span className="tiny">
+            Persis sebesar kerja ekspansinya. Cek Hukum Pertama:
+            Δ<V>U</V> = <V>Q</V> + <V>W</V> = 207,9 &minus; 83,1 = 124,7 J.
+          </span>
+        </div>
+        <Syarat>
+          tanda mengikuti Konvensi 1 (<V>dW</V> = &minus;<V>P</V>d<V>V</V>), jadi kerja saat memuai
+          bernilai negatif. Δ<V>U</V> sama di kedua proses karena energi internal gas ideal hanya
+          bergantung pada suhu.
+        </Syarat>
+      </Reveal>
     </>
   ),
 };
@@ -555,6 +672,11 @@ const adiabatik = {
               <span className="gold"> γ kali</span> kemiringan isotermal. Tekanan turun bukan hanya
               karena volume bertambah, tetapi juga karena energi internal ikut turun.
             </p>
+            <Syarat>
+              <V>PV</V><sup>γ</sup> = konstan hanya untuk gas ideal pada proses adiabatik yang
+              reversibel. Ekspansi bebas juga punya <V>Q</V> = 0, tetapi ireversibel, jadi tidak
+              memenuhi hubungan ini.
+            </Syarat>
           </Reveal>
         </div>
       </div>
@@ -664,17 +786,32 @@ const penutup = {
         </h2>
       </Reveal>
 
-      <Reveal at={1} step={step} style={{ marginTop: 26 }}>
-        <p className="lead" style={{ fontSize: 21, marginBottom: 32 }}>
-          Setiap sistem termodinamika adalah hasil tawar-menawar antara efisiensi reversibel yang
-          ideal dan realitas ireversibel yang tak terhindarkan. Memahami taksonomi prosesnya adalah
-          kunci untuk menganalisis efisiensi energi.
-        </p>
-        <Names />
-        <p className="tiny" style={{ margin: '18px 0 26px' }}>
-          Sumber: Sandeep Sharma, <em>Bab 2, Heat Capacities and Thermodynamic Processes</em>
-        </p>
-        {ctx?.pdfButton}
+      <Reveal at={1} step={step} style={{ marginTop: 24 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1.15fr 1fr', gap: 52, alignItems: 'start' }}>
+          <div>
+            <p className="lead" style={{ fontSize: 20, marginBottom: 26 }}>
+              Setiap sistem termodinamika adalah hasil tawar-menawar antara efisiensi reversibel yang
+              ideal dan realitas ireversibel yang tak terhindarkan. Memahami taksonomi prosesnya
+              adalah kunci untuk menganalisis efisiensi energi.
+            </p>
+            <Names />
+          </div>
+
+          <div className="stack">
+            <div className="tag">Referensi</div>
+            <p className="tiny" style={{ fontSize: 15.5, lineHeight: 1.55 }}>
+              {SUMBER.penulis}. <em>{SUMBER.judul}</em>, {SUMBER.edisi}. {SUMBER.penerbit}, {SUMBER.tahun}.
+              <br />
+              {SUMBER.bab}, hlm. {SUMBER.halaman}.
+            </p>
+            <p className="tiny" style={{ fontSize: 14, marginTop: 10, color: 'var(--ink-4)' }}>
+              Konvensi tanda kerja: <V>dW</V> = &minus;<V>P</V>d<V>V</V> (Konvensi 1).
+              Tetapan gas <V>R</V> = 8,314 J mol⁻¹ K⁻¹.
+            </p>
+          </div>
+        </div>
+
+        <div style={{ marginTop: 28 }}>{ctx?.pdfButton}</div>
       </Reveal>
     </>
   ),
@@ -682,7 +819,7 @@ const penutup = {
 
 export const slides = [
   sampul, peta, definisi, cvcp, sifat, entalpi, turunan, molar,
-  kenapa, kalorimetri, taksonomi, adiabatik, kasus, nyata, penutup,
+  kenapa, contoh, kalorimetri, taksonomi, adiabatik, kasus, nyata, penutup,
 ];
 
 export default slides;

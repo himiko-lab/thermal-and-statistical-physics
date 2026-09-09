@@ -59,8 +59,8 @@
 
   --ink: #f7f5f1;
   --ink-2: rgba(247, 245, 241, 0.66);
-  --ink-3: rgba(247, 245, 241, 0.40);
-  --ink-4: rgba(247, 245, 241, 0.22);
+  --ink-3: rgba(247, 245, 241, 0.52);
+  --ink-4: rgba(247, 245, 241, 0.30);
 
   --accent: var(--gold);
   --foreground: var(--ink);
@@ -270,6 +270,28 @@ body,
 
 .rows { display: flex; flex-direction: column; gap: 13px; }
 
+/* Syarat berlakunya sebuah rumus. Sengaja ada di slide, bukan cuma di catatan
+   presenter, karena penilai membaca slide dan PDF-nya. */
+.syarat {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 10px 0 0 14px;
+  border-left: 1px solid var(--gold-line);
+  font-size: 15.5px;
+  line-height: 1.45;
+  color: var(--ink-3);
+}
+
+.syarat b {
+  flex: none;
+  font-weight: 500;
+  font-size: 11.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
 .row {
   display: flex;
   align-items: flex-start;
@@ -377,10 +399,10 @@ body,
   width: max-content;
   max-width: 26ch;
   font-family: var(--font-ui);
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 400;
   line-height: 1.38;
-  color: var(--ink-3);
+  color: var(--ink-2);
   text-align: center;
   opacity: 0;
   transform: translate3d(-50%, 5px, 0);
@@ -410,8 +432,8 @@ body,
 .formula-note {
   margin-top: 16px;
   text-align: center;
-  font-size: 17.5px;
-  color: var(--ink-3);
+  font-size: 18px;
+  color: var(--ink-2);
 }
 
 /* Rumus tunggal yang berdiri sendiri, tanpa ledakan. */

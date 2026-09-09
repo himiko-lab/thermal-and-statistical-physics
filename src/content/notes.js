@@ -88,6 +88,18 @@ export const notes = {
       'Tunggu sekitar 1,5 detik sampai bar selesai mengisi sebelum lanjut bicara.',
     ],
   },
+  contoh: {
+    target: 95,
+    notes: [
+      'Slide ini yang mengubah presentasi dari menjelaskan konsep jadi menerapkannya. Bacakan angkanya pelan-pelan.',
+      'Ambil 1 mol gas ideal monoatomik, naikkan suhunya 10 kelvin. Monoatomik berarti hanya punya tiga derajat kebebasan translasi, sehingga CV molar = 3/2 R.',
+      'Volume tetap: CV molar 12,47 sehingga Q = 124,7 joule. Semuanya jadi energi internal, tidak ada kerja sama sekali.',
+      'Tekanan tetap: CP molar 20,79 sehingga Q = 207,9 joule. Padahal kenaikan suhunya sama persis, jadi perubahan energi internalnya juga sama, 124,7 joule.',
+      'Selisihnya 83,1 joule. Itu bukan angka acak: nilainya persis nR delta T, dan itulah kerja yang dipakai sistem untuk mendorong pistonnya.',
+      'Tegaskan tandanya. Kita pakai Konvensi 1, jadi kerja saat memuai bernilai NEGATIF: W = minus 83,1 joule. Cek Hukum Pertama: delta U = Q + W = 207,9 dikurangi 83,1 = 124,7. Cocok.',
+      'Kalau ditanya kenapa delta U-nya sama di kedua kasus: karena energi internal gas ideal hanya bergantung pada suhu, tidak pada volume.',
+    ],
+  },
   kalorimetri: {
     target: 75,
     notes: [
