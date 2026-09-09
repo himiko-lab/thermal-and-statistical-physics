@@ -1,0 +1,27 @@
+{
+  "name": "deck-kapasitas-panas",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "build:offline": "vite build --mode offline && node -e \"require('fs').copyFileSync('dist-offline/index.html','deck-offline.html')\"",
+    "serve": "python3 serve.py",
+    "start": "npm run build && python3 serve.py"
+  },
+  "dependencies": {
+    "@heroui/react": "^3.2.4",
+    "@heroui/styles": "^3.2.4",
+    "@phosphor-icons/react": "^2.1.10",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@vitejs/plugin-react": "^6.1.1",
+    "tailwindcss": "^4.3.3",
+    "vite": "^8.2.2",
+    "vite-plugin-singlefile": "^2.3.3"
+  }
+}
