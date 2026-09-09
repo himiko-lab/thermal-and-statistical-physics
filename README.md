@@ -117,6 +117,33 @@ Kalau yang terbalik justru arah slide-nya, bukan rangkanya, ubah
 
 ---
 
+## Membuka di ponsel
+
+Deck ini juga jalan di browser ponsel, misalnya dari GitHub Pages. Yang berbeda
+di sana:
+
+- **Tiga tombol kecil di sudut kanan bawah**: mundur, Catatan, dan maju. Ponsel
+  tidak punya tombol panah, jadi navigasinya lewat sentuhan. Tombolnya sengaja
+  redup dan bergaris rambut supaya tidak bersaing dengan isi slide, dan menyala
+  penuh hanya saat disentuh.
+- **Catatan presenter muncul sebagai lembar dari bawah**, bukan jendela
+  terpisah. Di ponsel tidak ada layar kedua, dan jendela baru berarti tab baru
+  yang justru menutupi decknya. Isinya sama persis dengan versi desktop,
+  termasuk kunci cara baca simbol.
+- **Hand tracking dimatikan**, begitu pula preview kameranya. Di ponsel tangan
+  dipakai memegang perangkatnya, jadi menyalakan kamera hanya memunculkan
+  permintaan izin yang sia-sia dan menguras baterai.
+
+Perangkat sentuh dikenali lewat media query `(hover: none) and (pointer:
+coarse)`, bukan lewat user agent, supaya iPad berpapan tik dan laptop berlayar
+sentuh tetap tertangani dengan benar.
+
+Panggungnya 16:9, jadi di layar tegak ia jadi strip tipis dengan pita hitam
+lebar di atas dan bawah. Di slide pertama, petunjuknya otomatis berubah jadi
+ajakan memutar layar. Dalam posisi lanskap, slide mengisi penuh tinggi layar.
+
+---
+
 ## Ekspor PDF
 
 Tekan `P`, atau klik tombol **Ekspor PDF** di slide penutup.

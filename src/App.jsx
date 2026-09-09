@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { Button } from '@heroui/react';
-import { FilePdf, Hand, Keyboard, Question } from '@phosphor-icons/react';
+import { CaretLeft, CaretRight, FilePdf, Hand, Keyboard, ListBullets, Question } from '@phosphor-icons/react';
 
 import slides from './content/slides.jsx';
 import notes from './content/notes.js';
 import useGesture from './hooks/useGesture.js';
 import useCascade, { CASCADE } from './hooks/useCascade.js';
+import useMediaQuery, { TOUCH, PORTRAIT } from './hooks/useMediaQuery.js';
+import NotesSheet from './components/NotesSheet.jsx';
 
 const STAGE_W = 1280;
 const STAGE_H = 720;
@@ -48,6 +50,10 @@ export default function App() {
   const [camZoom, setCamZoom] = useState(false);
   const [toast, setToast] = useState(null);
   const [printing, setPrinting] = useState(false);
+  const [sheet, setSheet] = useState(false);
+
+  const isTouch = useMediaQuery(TOUCH);
+  const isPortrait = useMediaQuery(PORTRAIT);
 
   const stageRef = useRef(null);
   const videoRef = useRef(null);
@@ -57,7 +63,7 @@ export default function App() {
   const next = useCallback(() => dispatch({ type: 'next' }), []);
   const prev = useCallback(() => dispatch({ type: 'prev' }), []);
 
-  const gesture = useGesture({ videoRef, canvasRef, onNext: next, onPrev: prev, active: !__OFFLINE__ });
+  const gesture = useGesture({ videoRef, canvasRef, onNext: next, onPrev: prev, active: !__OFFLINE__ && !isTouch });
 
   // Setiap slide hanya punya dua tahap. Urutan yang lebih halus dari itu
   // dijalankan oleh timer, bukan oleh klik tambahan. Saat mencetak, seluruh
@@ -140,6 +146,13 @@ export default function App() {
 
   useEffect(() => () => notesWinRef.current?.close?.(), []);
 
+  /* Di desktop catatan dibuka di jendela terpisah supaya bisa ditaruh di layar
+     laptop; di ponsel tidak ada layar kedua, jadi ia muncul sebagai lembar. */
+  const showNotes = useCallback(() => {
+    if (isTouch) setSheet((v) => !v);
+    else openNotes();
+  }, [isTouch, openNotes]);
+
   /* ──────────────────────────────────────────────────────────── papan tik */
   useEffect(() => {
     const onKey = (e) => {
@@ -149,7 +162,7 @@ export default function App() {
         case 'ArrowLeft': case 'PageUp': e.preventDefault(); prev(); break;
         case 'Home': dispatch({ type: 'first' }); break;
         case 'End': dispatch({ type: 'last' }); break;
-        case 'Escape': setHelp(false); setCamZoom(false); break;
+        case 'Escape': setHelp(false); setCamZoom(false); setSheet(false); break;
         case '?': case '/': setHelp((v) => !v); break;
         default: break;
       }
@@ -163,7 +176,7 @@ export default function App() {
           break;
         case 'c': setCamOn((v) => !v); break;
         case 'z': setCamZoom((v) => !v); break;
-        case 'n': openNotes(); break;
+        case 'n': showNotes(); break;
         case 'p': exportPdf(); break;
         case 'f':
           if (document.fullscreenElement) document.exitFullscreen();
@@ -174,7 +187,7 @@ export default function App() {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [next, prev, gesture, openNotes, exportPdf, say]);
+  }, [next, prev, gesture, showNotes, exportPdf, say]);
 
   const progress = ((OFFSETS[i] + step + 1) / TOTAL_STEPS) * 100;
 
@@ -220,8 +233,51 @@ export default function App() {
 
       {i === 0 ? (
         <div className="hud hud--hint">
-          {__OFFLINE__ ? 'Tekan → untuk lanjut · ? untuk bantuan' : 'Buka telapak lalu geser · atau tekan → · ? untuk bantuan'}
+          {isTouch
+            ? isPortrait
+              ? 'Putar layar untuk tampilan lebih besar'
+              : 'Ketuk tombol di kanan bawah untuk lanjut'
+            : __OFFLINE__
+              ? 'Tekan → untuk lanjut · ? untuk bantuan'
+              : 'Buka telapak lalu geser · atau tekan → · ? untuk bantuan'}
         </div>
+      ) : null}
+
+      {/* Perangkat sentuh tidak punya tombol panah. Kontrolnya sengaja kecil
+          dan redup supaya tidak bersaing dengan isi slide. */}
+      {isTouch ? (
+        <div className="hud hud--touch">
+          <button
+            className="tbtn"
+            onClick={prev}
+            disabled={i === 0 && step === 0}
+            aria-label="Slide sebelumnya"
+          >
+            <CaretLeft size={18} weight="light" />
+          </button>
+          <button className="tbtn tbtn--wide" onClick={showNotes} aria-label="Catatan presenter">
+            <ListBullets size={16} weight="light" />
+            Catatan
+          </button>
+          <button
+            className="tbtn"
+            onClick={next}
+            disabled={i === slides.length - 1 && step === slides[i].steps - 1}
+            aria-label="Slide selanjutnya"
+          >
+            <CaretRight size={18} weight="light" />
+          </button>
+        </div>
+      ) : null}
+
+      {sheet ? (
+        <NotesSheet
+          no={i + 1}
+          total={slides.length}
+          title={slides[i].title}
+          entry={notes[slides[i].id]}
+          onClose={() => setSheet(false)}
+        />
       ) : null}
 
       {/* Selalu ter-mount, disembunyikan lewat CSS. Kalau elemennya dicabut
