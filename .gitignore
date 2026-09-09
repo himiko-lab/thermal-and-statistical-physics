@@ -1,0 +1,9 @@
+# Dipasang ulang dengan `npm ci` di CI dan `npm install` di lokal.
+# package-lock.json yang menjadi sumber kebenarannya, bukan isi folder ini.
+node_modules/
+
+# Keluaran graphify, bisa dihasilkan ulang dari sumbernya.
+graphify-out/
+
+# Berkas sistem macOS.
+.DS_Store
