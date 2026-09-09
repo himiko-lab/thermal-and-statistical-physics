@@ -6,6 +6,10 @@
  *
  * Requiring the palm to stay open is what keeps normal talking-with-your-hands
  * from flipping slides: a relaxed or half-closed hand never arms the detector.
+ *
+ * Disalin dari deck Sensatype dan sejak itu diubah di dua tempat: penjaga
+ * kemacetan pada _loop, dan start() yang dibuat aman dipanggil berkali-kali.
+ * Sisanya dibiarkan persis seperti aslinya.
  */
 
 import { FilesetResolver, HandLandmarker } from './vendor/vision_bundle.mjs';
@@ -78,6 +82,13 @@ export const CONFIG = {
    * after this long so the deck can never wedge mid-presentation.
    */
   rearmTimeoutMs: 1500,
+  /**
+   * Kadang kamera menyala tetapi tidak pernah mengirim frame: play() ditolak
+   * diam-diam, tab sempat tersembunyi saat start, atau track direbut aplikasi
+   * lain. Kalau selama ini tidak ada satu pun frame terproses, sesi kamera
+   * dibangun ulang. Tanpa ini deck diam di "Mencari tangan..." selamanya.
+   */
+  stallTimeoutMs: 2500,
 };
 
 export const STATE = {
@@ -114,9 +125,32 @@ export class HandGestureController extends EventTarget {
     this._lastVideoTime = -1;
     this._rafId = null;
     this._progress = 0;
+    this._lastFrameAt = 0;
+    this._recovering = false;
+    this._starting = null;
   }
 
-  async start() {
+  /**
+   * Sengaja bukan async: metode async selalu membungkus hasilnya dalam promise
+   * baru, sehingga dua pemanggilan tetap menghasilkan dua promise berbeda dan
+   * penjaga di bawah tidak benar-benar berbagi proses. Dengan mengembalikan
+   * promise yang sama secara langsung, pemanggil kedua ikut menunggu proses
+   * yang pertama.
+   *
+   * start() dipanggil saat mount, saat pengguna mengklik status untuk mencoba
+   * lagi, dan oleh penjaga kemacetan. Tanpa ini dua pemanggilan yang tumpang
+   * tindih bisa meminta getUserMedia dua kali dan saling menimpa srcObject,
+   * yang persis menghasilkan kamera menyala tanpa pelacakan.
+   */
+  start() {
+    if (this._starting) return this._starting;
+    this._starting = this._start().finally(() => {
+      this._starting = null;
+    });
+    return this._starting;
+  }
+
+  async _start() {
     this._setState(STATE.LOADING);
 
     // Guarded so a retry after a denied prompt doesn't rebuild the model.
@@ -221,9 +255,12 @@ export class HandGestureController extends EventTarget {
     this.video.srcObject = null;
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this._lastVideoTime = -1;
+    this._lastFrameAt = 0;
   }
 
   _startLoop() {
+    this._lastVideoTime = -1;
+    this._lastFrameAt = performance.now();
     if (this._rafId === null) this._loop();
   }
 
@@ -254,9 +291,15 @@ export class HandGestureController extends EventTarget {
   _loop = () => {
     this._rafId = requestAnimationFrame(this._loop);
 
-    if (!this.landmarker || this.video.readyState < 2) return;
-    if (this.video.currentTime === this._lastVideoTime) return;
+    if (!this.landmarker) return;
+
+    if (this.video.readyState < 2 || this.video.currentTime === this._lastVideoTime) {
+      this._checkStall();
+      return;
+    }
+
     this._lastVideoTime = this.video.currentTime;
+    this._lastFrameAt = performance.now();
 
     // Sized here rather than at open time: the camera reports its dimensions a
     // few frames in, and they can differ between sessions.
@@ -271,6 +314,45 @@ export class HandGestureController extends EventTarget {
     this._draw(hand);
     if (this.enabled) this._evaluate(hand);
   };
+
+  /**
+   * Kamera menyala tetapi tidak ada frame yang masuk. Sesi videonya dibangun
+   * ulang: srcObject dipasang lagi lalu play() diulang. Kalau track-nya memang
+   * sudah mati, misalnya karena direbut Zoom, stream-nya diminta dari awal.
+   */
+  _checkStall() {
+    if (!this.stream || !this.enabled || this._recovering) return;
+
+    const now = performance.now();
+    if (now - this._lastFrameAt < CONFIG.stallTimeoutMs) return;
+
+    this._recovering = true;
+    this._lastFrameAt = now;
+    this._setState(STATE.STARTING);
+
+    const track = this.stream.getVideoTracks()[0];
+    const dead = !track || track.readyState === 'ended';
+
+    if (dead) {
+      this._closeCamera();
+      this._openCamera()
+        .then((ok) => {
+          if (ok) this._startLoop();
+        })
+        .finally(() => {
+          this._recovering = false;
+        });
+      return;
+    }
+
+    if (this.video.srcObject !== this.stream) this.video.srcObject = this.stream;
+    this._lastVideoTime = -1;
+    Promise.resolve(this.video.play())
+      .catch(() => {})
+      .finally(() => {
+        this._recovering = false;
+      });
+  }
 
   _evaluate(hand) {
     const now = performance.now();

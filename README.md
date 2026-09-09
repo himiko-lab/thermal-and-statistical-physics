@@ -89,9 +89,31 @@ mendarat paling akhir. Klik sekali lalu diam sekitar dua detik.
 `H` adalah pengaman utama. Kalau deteksi mulai kacau karena cahaya aneh atau
 backlight jendela, tekan `H` sekali dan lanjut pakai panah.
 
-Kode deteksinya (`public/gesture.js`) disalin apa adanya dari deck Sensatype dan
-sengaja tidak diubah, karena sudah melewati penyetelan di ruangan sungguhan.
-Penyetelan lanjutan ada di `PRESETS` dan `CONFIG` di dalam berkas itu.
+Kode deteksinya (`public/gesture.js`) disalin dari deck Sensatype. Logika
+deteksinya tidak disentuh, karena sudah melewati penyetelan di ruangan
+sungguhan. Penyetelan lanjutan ada di `PRESETS` dan `CONFIG` di dalam berkas
+itu. Yang diubah hanya dua hal di luar logika deteksi:
+
+- **Penjaga kemacetan.** Kadang kamera menyala tetapi tidak pernah mengirim
+  satu frame pun: `play()` ditolak diam-diam, tab sempat tersembunyi saat
+  start, atau track direbut aplikasi lain. Kalau selama 2,5 detik tidak ada
+  frame yang terproses, sesi videonya dibangun ulang sendiri. Kalau track-nya
+  memang sudah mati, stream diminta ulang dari awal.
+- **`start()` aman dipanggil berkali-kali.** Ia dipanggil saat mount, saat
+  status diklik untuk mencoba lagi, dan oleh penjaga kemacetan. Dua pemanggilan
+  yang tumpang tindih bisa meminta kamera dua kali dan saling menimpa
+  `srcObject`, yang justru menghasilkan kamera menyala tanpa pelacakan.
+
+### Kalau rangka tangan bergerak berlawanan arah
+
+`gesture.js` menggambar rangkanya dalam koordinat cermin, supaya cocok dengan
+video yang tampil seperti cermin. Jadi **hanya elemen `<video>` yang boleh
+diberi `transform: scaleX(-1)`**, tidak canvas-nya. Kalau canvas ikut dibalik,
+pembalikan terjadi dua kali dan rangkanya bergerak berlawanan dengan tangan
+aslinya. Aturannya ada di `.cam-box video` pada `src/styles.css`.
+
+Kalau yang terbalik justru arah slide-nya, bukan rangkanya, ubah
+`invertDirection` di `CONFIG`.
 
 ---
 

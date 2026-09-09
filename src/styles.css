@@ -481,6 +481,11 @@ body,
 .hud--cam:hover,
 .hud--cam[data-live="true"] { opacity: 1; }
 
+.hud--cam[data-hidden="true"] {
+  opacity: 0;
+  pointer-events: none;
+}
+
 .cam-box {
   position: relative;
   width: 96px;
@@ -498,10 +503,15 @@ body,
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transform: scaleX(-1);
 }
 
-.cam-box video { opacity: 0.38; }
+/* Hanya video yang dicerminkan. Rangka tangannya sudah digambar dalam
+   koordinat cermin oleh gesture.js, jadi membalik canvas di sini akan
+   membalikkannya untuk kedua kalinya. */
+.cam-box video {
+  opacity: 0.38;
+  transform: scaleX(-1);
+}
 
 .cam-status {
   margin-top: 5px;

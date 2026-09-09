@@ -41,6 +41,8 @@ export default function useGesture({ videoRef, canvasRef, onNext, onPrev, active
     if (!active || __OFFLINE__) return;
     let disposed = false;
 
+    let controller = null;
+
     (async () => {
       let mod;
       try {
@@ -52,9 +54,9 @@ export default function useGesture({ videoRef, canvasRef, onNext, onPrev, active
         if (!disposed) setState('no-camera');
         return;
       }
-      if (disposed) return;
+      if (disposed || !videoRef.current || !canvasRef.current) return;
 
-      const controller = new mod.HandGestureController({
+      controller = new mod.HandGestureController({
         video: videoRef.current,
         canvas: canvasRef.current,
       });
@@ -71,12 +73,17 @@ export default function useGesture({ videoRef, canvasRef, onNext, onPrev, active
 
       setPreset(mod.PRESETS[controller.preset]?.label ?? 'Normal');
       await controller.start();
+
+      // start() menunggu izin kamera, jadi ia bisa selesai jauh setelah efek
+      // ini dibersihkan. Kalau itu terjadi, kameranya sudah menyala tanpa
+      // pemilik dan akan bentrok dengan controller berikutnya. Lepaskan.
+      if (disposed) controller.stop();
     })();
 
     return () => {
       disposed = true;
-      controllerRef.current?.stop?.();
-      controllerRef.current = null;
+      controller?.stop?.();
+      if (controllerRef.current === controller) controllerRef.current = null;
     };
   }, [active, videoRef, canvasRef]);
 

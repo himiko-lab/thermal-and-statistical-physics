@@ -223,8 +223,15 @@ export default function App() {
         </div>
       ) : null}
 
-      {!__OFFLINE__ && camOn ? (
-        <div className="hud hud--cam" data-live={['tracking', 'armed', 'cooldown', 'rearm'].includes(gesture.state) ? 'true' : undefined}>
+      {/* Selalu ter-mount, disembunyikan lewat CSS. Kalau elemennya dicabut
+          dari DOM saat C ditekan, controller tetap memegang <video> lama yang
+          sudah lepas dan pelacakan tidak pernah pulih. */}
+      {!__OFFLINE__ ? (
+        <div
+          className="hud hud--cam"
+          data-hidden={camOn ? undefined : 'true'}
+          data-live={['tracking', 'armed', 'cooldown', 'rearm'].includes(gesture.state) ? 'true' : undefined}
+        >
           <div className="cam-box">
             <video ref={videoRef} playsInline muted />
             <canvas ref={canvasRef} width={320} height={240} />
