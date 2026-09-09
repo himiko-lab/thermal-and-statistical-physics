@@ -119,6 +119,7 @@ export default function App() {
       steps: s.steps,
       target: n.target,
       notes: n.notes,
+      simbol: n.simbol ?? [],
       next: nextSlide ? nextSlide.title : 'Selesai',
     };
     const post = () => win.postMessage({ type: 'deck:update', payload }, '*');
@@ -291,37 +292,59 @@ function Row({ k, v, icon }) {
 const NOTES_DOC = `<!doctype html><html lang="id"><head><meta charset="utf-8">
 <title>Catatan presenter</title><style>
 :root{color-scheme:dark}
-body{margin:0;padding:22px;background:#0d1117;color:#e8eef6;
+*{box-sizing:border-box}
+body{margin:0;height:100vh;display:flex;flex-direction:column;background:#0a0a0b;color:#f7f5f1;
  font:15px/1.55 -apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif}
+.pane{flex:1;overflow-y:auto;padding:22px 24px}
 .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
-.no{font-size:13px;letter-spacing:.14em;color:#22d3ee;text-transform:uppercase}
-h1{font-size:24px;margin:2px 0 4px;letter-spacing:-.02em}
-.meta{font-size:12px;color:#7c8ba1;margin-bottom:18px}
-#timer{font-variant-numeric:tabular-nums;font-size:26px;color:#e8eef6}
-#timer.over{color:#fb923c}
+.no{font-size:12px;letter-spacing:.16em;color:#efc25e;text-transform:uppercase}
+h1{font-size:23px;margin:2px 0 4px;letter-spacing:-.02em}
+.meta{font-size:12px;color:rgba(247,245,241,.42);margin-bottom:18px}
+#timer{font-variant-numeric:tabular-nums;font-size:26px}
+#timer.over{color:#efc25e}
 ul{margin:0;padding:0;list-style:none}
-li{padding:11px 0 11px 16px;border-left:2px solid #1e2a38;margin-bottom:8px;color:#c3ceda}
-li:first-child{border-left-color:#22d3ee}
-.next{margin-top:22px;padding-top:14px;border-top:1px solid #1e2a38;font-size:13px;color:#7c8ba1}
-.keys{margin-top:14px;font-size:12px;color:#5a6878}
+li{padding:10px 0 10px 15px;border-left:1px solid rgba(255,255,255,.10);margin-bottom:7px;
+ color:rgba(247,245,241,.80)}
+li:first-child{border-left-color:#efc25e}
+.next{margin-top:20px;padding-top:13px;border-top:1px solid rgba(255,255,255,.10);
+ font-size:13px;color:rgba(247,245,241,.42)}
+/* Kunci cara baca, dipatok di bagian bawah jendela dan berbeda tiap slide. */
+.sym{flex:none;max-height:40vh;overflow-y:auto;padding:13px 24px 17px;
+ border-top:1px solid rgba(239,194,94,.30);background:#101012}
+.symhead{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:#efc25e;margin-bottom:9px}
+dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:5px 14px;align-items:baseline}
+dt{font-family:"STIX Two Text","New York",Georgia,serif;font-size:17px;color:#f7f5f1;white-space:nowrap}
+dd{margin:0;font-size:12.5px;line-height:1.4;color:rgba(247,245,241,.55)}
+dd b{font-weight:500;color:#efc25e}
+.keys{padding:0 24px 12px;font-size:11px;color:rgba(247,245,241,.30)}
 </style></head><body>
-<div class="top"><span class="no" id="no"></span><span id="timer">00:00</span></div>
-<h1 id="title">Menunggu deck…</h1>
-<div class="meta" id="meta"></div>
-<ul id="notes"></ul>
-<div class="next" id="next"></div>
+<div class="pane">
+  <div class="top"><span class="no" id="no"></span><span id="timer">00:00</span></div>
+  <h1 id="title">Menunggu deck…</h1>
+  <div class="meta" id="meta"></div>
+  <ul id="notes"></ul>
+  <div class="next" id="next"></div>
+</div>
+<div class="sym" id="symWrap" hidden>
+  <div class="symhead">Cara baca simbol di slide ini</div>
+  <dl id="sym"></dl>
+</div>
 <div class="keys">R reset timer &middot; T mulai/jeda &middot; panah untuk navigasi</div>
 <script>
 let t=0,run=false;
 const el=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));
 setInterval(()=>{if(run){t++;const m=String(Math.floor(t/60)).padStart(2,'0'),s=String(t%60).padStart(2,'0');el('timer').textContent=m+':'+s;}},1000);
 window.addEventListener('message',e=>{
   const d=e.data;if(!d||d.type!=='deck:update')return;const p=d.payload;
   el('no').textContent='Slide '+p.no+' / '+p.total;
   el('title').textContent=p.title;
-  el('meta').textContent='Tahap '+p.step+' dari '+p.steps+(p.target?' \\u00b7 target '+p.target+' detik':'');
-  el('notes').innerHTML=p.notes.map(n=>'<li>'+n.replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]))+'</li>').join('');
+  el('meta').textContent='Tahap '+p.step+' dari '+p.steps+(p.target?' · target '+p.target+' detik':'');
+  el('notes').innerHTML=p.notes.map(n=>'<li>'+esc(n)+'</li>').join('');
   el('next').textContent='Berikutnya: '+p.next;
+  const sym=p.simbol||[];
+  el('symWrap').hidden=sym.length===0;
+  el('sym').innerHTML=sym.map(x=>'<dt>'+esc(x.s)+'</dt><dd><b>'+esc(x.baca)+'</b>'+(x.arti?' · '+esc(x.arti):'')+'</dd>').join('');
 });
 document.addEventListener('keydown',e=>{
   const k=e.key.toLowerCase();

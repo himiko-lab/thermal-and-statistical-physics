@@ -234,12 +234,28 @@ serta `PV^γ = konstan`.
 `src/content/notes.js`, satu entri per `id` slide. Tekan `N` saat presentasi
 untuk membukanya di jendela terpisah, lengkap dengan timer dan target durasi.
 
-Total target seluruh catatan saat ini **22,7 menit**, belum termasuk jeda
-animasi dan tanya jawab. Kalau alokasinya 15 menit, yang paling layak dipangkas
-adalah empat entri terpanjang: `turunan` (120 detik), `adiabatik` (115),
-`kenapa` (110), dan `kasus` (105). Angka `target` di tiap entri boleh diubah
-bebas; ia hanya menggerakkan pengingat di jendela catatan, tidak memengaruhi
-deck.
+Tiap entri punya tiga bagian:
+
+```js
+turunan: {
+  target: 85,                       // perkiraan durasi bicara, detik
+  notes: ['...', '...'],            // poin yang diucapkan
+  simbol: [                         // kunci cara baca, tampil di bawah
+    { s: 'γ', baca: 'gamma', arti: 'nisbah C-P terhadap C-V' },
+  ],
+},
+```
+
+`simbol` muncul sebagai blok terpatok di bagian bawah jendela catatan, dan
+isinya **berbeda tiap slide**: hanya lambang yang benar-benar dipakai di slide
+itu. Gunanya supaya tidak ada keraguan saat harus mengucapkan `κ_T` atau `∂`
+di depan kelas. Lambang yang berulang di banyak slide dikumpulkan di konstanta
+`S` pada bagian atas berkas supaya tidak ditulis berkali-kali. Slide tanpa
+lambang, seperti sampul, otomatis tidak menampilkan bloknya.
+
+Total target seluruh catatan **15,8 menit**, belum termasuk jeda animasi dan
+tanya jawab. Angka `target` boleh diubah bebas; ia hanya menggerakkan pengingat
+di jendela catatan, tidak memengaruhi deck.
 
 > Layar harus **extended**, bukan mirrored. System Settings, Displays, matikan
 > "Mirror Displays". Taruh jendela deck di proyektor lalu tekan `F`, dan jendela
