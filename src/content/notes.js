@@ -34,7 +34,8 @@ export const notes = {
   sampul: {
     target: 30,
     notes: [
-      'Perkenalkan kelompok dan judulnya: Kapasitas Panas dan Proses Termodinamika, dari Sandeep Sharma Bab 2.',
+      'Perkenalkan kelompok dan judulnya: Kapasitas Panas dan Proses Termodinamika.',
+      'Sebutkan sumbernya sekali di awal: buku Sandeep Sharma, Thermal and Statistical Physics, Bab 2, The Laws of Thermodynamics. Bab itu memuat hukum ke-0, hukum pertama, kapasitas panas, dan klasifikasi proses sekaligus.',
       'Satu kalimat pembuka yang menjanjikan arah: hari ini kita lihat bagaimana sistem merespons kalor, lalu bagaimana respons itu diklasifikasikan jadi berbagai jenis proses.',
       'Jangan buru-buru pindah. Biarkan judulnya sempat terbaca.',
     ],
@@ -79,7 +80,7 @@ export const notes = {
       'Kiri, volume tetap: pistonnya dipaku. Karena dV nol, maka kerjanya juga nol. Tidak ada kerja mekanis sama sekali.',
       'Akibatnya seluruh kalor yang masuk jadi energi internal, sehingga C-V adalah turunan parsial U terhadap T pada volume tetap.',
       'Kanan, tekanan tetap: pistonnya bebas naik supaya tekanannya terjaga. Di sini kalor terbagi dua, sebagian jadi energi internal, sebagian jadi kerja untuk mendorong piston.',
-      'Karena itu bentuk formalnya memakai entalpi, bukan energi internal. Slide berikutnya menjelaskan kenapa entalpi yang dipakai.',
+      'Karena itu bentuk formalnya memakai entalpi, bukan energi internal. Kenapa harus entalpi, itu kita bahas di bagian 02 nanti.',
     ],
     simbol: [
       S.CV, S.CP, S.del, S.U, S.H,
@@ -223,7 +224,7 @@ export const notes = {
       'Tegaskan konvensi tandanya lebih dulu, karena inilah sumber kesalahan paling umum. Kita pakai Konvensi 1: dW sama dengan minus P dV.',
       'Artinya kerja bernilai positif kalau dilakukan PADA sistem, yaitu saat kompresi. Dan negatif kalau dilakukan OLEH sistem, yaitu saat ekspansi.',
       'Kalau di buku lain tandanya terbalik, itu Konvensi 2. Bukan salah, hanya beda kesepakatan. Yang penting kita konsisten sepanjang presentasi.',
-      'Bacakan enam prosesnya cepat saja, jangan diurai satu per satu di sini. Empat di antaranya kita bahas lebih dalam di slide berikutnya.',
+      'Bacakan enam prosesnya cepat saja, jangan diurai satu per satu di sini. Isotermal dan adiabatik kita bandingkan di slide berikutnya, empat sisanya setelah itu.',
     ],
     simbol: [
       S.d, S.D, S.gamma, S.Q, S.W, S.U,
@@ -295,8 +296,8 @@ export const notes = {
     target: 30,
     notes: [
       'Rangkum dalam satu kalimat: setiap sistem termodinamika adalah kompromi antara efisiensi reversibel yang ideal dan realitas ireversibel yang tak terhindarkan.',
-      'Pemahaman taksonomi proses inilah yang jadi kunci untuk menganalisis efisiensi energi.',
-      'Sebutkan sumbernya, lalu buka sesi tanya jawab.',
+      'Pemahaman klasifikasi proses inilah yang jadi kunci untuk menganalisis efisiensi energi.',
+      'Sebutkan sumbernya: Sandeep Sharma, Thermal and Statistical Physics, Springer 2022, Bab 2, halaman 17 sampai 70. Lalu buka sesi tanya jawab.',
       'Tombol Ekspor PDF ada di slide ini kalau sewaktu-waktu diperlukan. Bisa juga ditekan dengan tombol P dari slide mana pun.',
     ],
     simbol: [

@@ -4,7 +4,9 @@ Deck presentasi berbasis web untuk mata kuliah Fisika Termal dan Statistika.
 Digeser pakai gerakan tangan lewat kamera depan MacBook, atau panah keyboard.
 
 Kelompok 4 - Ara Ayesha Putri Asnan, Khanum Aditiya Putra, Ramdhan Rizka Fakhresi
-Kamis, 10 September 2026. Sumber materi: Sandeep Sharma, Bab 2.
+Kamis, 10 September 2026.
+Sumber: Sandeep Sharma, *Thermal and Statistical Physics: Concepts and
+Applications*, Springer Cham 2022, Bab 2 (hlm. 17-70).
 
 ---
 
@@ -264,13 +266,25 @@ Ada dua cara menunda kemunculan, dan keduanya tidak menambah klik:
 
 Penomoran slide, bar progres, dan navigasi menyesuaikan sendiri.
 
-### Melengkapi sitasi
+### Sitasi
 
-`SUMBER` di bagian atas `src/content/slides.jsx` masih memuat penanda
-`LENGKAPI:` untuk judul lengkap, edisi, tahun, penerbit, dan rentang halaman.
-Isi dengan data sebenarnya dari buku yang kalian pakai. Penandanya sengaja
-dibuat terlihat di slide penutup supaya tidak terlewat, karena sitasi yang
-tidak bisa ditelusuri lebih merugikan daripada sitasi yang singkat.
+`SUMBER` di bagian atas `src/content/slides.jsx` memuat data sumber, dan slide
+penutup merakitnya jadi satu blok referensi. Datanya sudah dicocokkan dengan
+katalog Springer:
+
+| Bidang | Isi |
+|---|---|
+| Buku | Thermal and Statistical Physics: Concepts and Applications |
+| Penerbit | Springer, Cham, 2022, edisi ke-1 |
+| Bab | Bab 2, The Laws of Thermodynamics, hlm. 17-70 |
+| ISBN | 978-3-031-07684-8 |
+| DOI | 10.1007/978-3-031-07685-5 |
+
+Judul babnya **"The Laws of Thermodynamics"**, bukan "Heat Capacities and
+Thermodynamic Processes" seperti dugaan awal dari dokumen ringkasan. Bab itu
+memang memuat hukum ke-0, konvensi tanda, hukum pertama, kapasitas panas, dan
+klasifikasi proses sekaligus, jadi seluruh materi deck ini memang berada di
+sana.
 
 ### Syarat berlakunya rumus
 

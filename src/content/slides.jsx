@@ -26,18 +26,25 @@ import PVChart from '../components/PVChart.jsx';
 const ANGGOTA = ['Ara Ayesha Putri Asnan', 'Khanum Aditiya Putra', 'Ramdhan Rizka Fakhresi'];
 
 /**
- * Sumber materi. Isi yang bertanda LENGKAPI dengan data sebenarnya dari buku
- * yang kalian pakai; jangan dibiarkan, karena sitasi yang tidak bisa
- * ditelusuri justru merugikan saat dinilai.
+ * Sumber materi, diverifikasi terhadap katalog Springer.
+ *
+ * Judul babnya "The Laws of Thermodynamics", bukan "Heat Capacities and
+ * Thermodynamic Processes" seperti dugaan awal dari dokumen ringkasan. Bab itu
+ * memang memuat hukum ke-0, konvensi tanda, hukum pertama, kapasitas panas,
+ * dan klasifikasi proses sekaligus, jadi seluruh materi deck ini ada di sana.
+ *
+ * DOI dicantumkan karena itu penanda yang paling bisa ditelusuri.
  */
 const SUMBER = {
   penulis: 'Sandeep Sharma',
-  judul: 'LENGKAPI: judul lengkap buku',
-  edisi: 'LENGKAPI: edisi',
-  tahun: 'LENGKAPI: tahun terbit',
-  penerbit: 'LENGKAPI: penerbit',
-  bab: 'Bab 2, Heat Capacities and Thermodynamic Processes',
-  halaman: 'LENGKAPI: rentang halaman',
+  judul: 'Thermal and Statistical Physics: Concepts and Applications',
+  edisi: 'Edisi ke-1',
+  tahun: '2022',
+  penerbit: 'Springer, Cham',
+  bab: 'Bab 2, The Laws of Thermodynamics',
+  halaman: '17-70',
+  isbn: '978-3-031-07684-8',
+  doi: '10.1007/978-3-031-07685-5',
 };
 
 const Unit = ({ children }) => (
@@ -86,7 +93,7 @@ const sampul = {
       </Reveal>
 
       <Reveal at={1} step={step} style={{ marginTop: 34 }}>
-        <p className="lead" style={{ marginBottom: 26 }}>Sandeep Sharma, Bab 2</p>
+        <p className="lead" style={{ marginBottom: 26 }}>Sandeep Sharma, <em>Thermal and Statistical Physics</em>, Bab 2</p>
         <Names />
         <p className="tiny" style={{ marginTop: 18 }}>Kelompok 4 &nbsp;&middot;&nbsp; Kamis, 10 September 2026</p>
       </Reveal>
@@ -788,30 +795,32 @@ const penutup = {
 
       <Reveal at={1} step={step} style={{ marginTop: 24 }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1.15fr 1fr', gap: 52, alignItems: 'start' }}>
-          <div>
-            <p className="lead" style={{ fontSize: 20, marginBottom: 26 }}>
-              Setiap sistem termodinamika adalah hasil tawar-menawar antara efisiensi reversibel yang
-              ideal dan realitas ireversibel yang tak terhindarkan. Memahami taksonomi prosesnya
-              adalah kunci untuk menganalisis efisiensi energi.
-            </p>
-            <Names />
-          </div>
+          <p className="lead" style={{ fontSize: 20 }}>
+            Setiap sistem termodinamika adalah hasil tawar-menawar antara efisiensi reversibel yang
+            ideal dan realitas ireversibel yang tak terhindarkan. Memahami klasifikasi prosesnya
+            adalah kunci untuk menganalisis efisiensi energi.
+          </p>
 
           <div className="stack">
             <div className="tag">Referensi</div>
-            <p className="tiny" style={{ fontSize: 15.5, lineHeight: 1.55 }}>
-              {SUMBER.penulis}. <em>{SUMBER.judul}</em>, {SUMBER.edisi}. {SUMBER.penerbit}, {SUMBER.tahun}.
+            <p className="tiny" style={{ fontSize: 15, lineHeight: 1.55 }}>
+              {SUMBER.penulis}. <em>{SUMBER.judul}</em>. {SUMBER.edisi}.
+              {' '}{SUMBER.penerbit}, {SUMBER.tahun}.
               <br />
               {SUMBER.bab}, hlm. {SUMBER.halaman}.
             </p>
-            <p className="tiny" style={{ fontSize: 14, marginTop: 10, color: 'var(--ink-4)' }}>
+            <p className="tiny" style={{ fontSize: 13.5, marginTop: 8 }}>
+              ISBN {SUMBER.isbn} &middot; doi:{SUMBER.doi}
+            </p>
+            <p className="tiny" style={{ fontSize: 13.5, marginTop: 10, color: 'var(--ink-4)' }}>
               Konvensi tanda kerja: <V>dW</V> = &minus;<V>P</V>d<V>V</V> (Konvensi 1).
               Tetapan gas <V>R</V> = 8,314 J mol⁻¹ K⁻¹.
             </p>
           </div>
         </div>
 
-        <div style={{ marginTop: 28 }}>{ctx?.pdfButton}</div>
+        <div style={{ marginTop: 26 }}><Names /></div>
+        <div style={{ marginTop: 22 }}>{ctx?.pdfButton}</div>
       </Reveal>
     </>
   ),
