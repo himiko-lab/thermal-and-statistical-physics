@@ -7,14 +7,15 @@
  * Requiring the palm to stay open is what keeps normal talking-with-your-hands
  * from flipping slides: a relaxed or half-closed hand never arms the detector.
  *
- * Disalin dari deck Sensatype dan sejak itu diubah di dua tempat: penjaga
- * kemacetan pada _loop, dan start() yang dibuat aman dipanggil berkali-kali.
- * Sisanya dibiarkan persis seperti aslinya.
+ * Disalin dari deck Sensatype dan sejak itu diubah di tiga tempat: penjaga
+ * kemacetan pada _loop, start() yang dibuat aman dipanggil berkali-kali, dan
+ * beberapa properti baca-saja untuk mode uji (lastHand, fps, extended).
+ * Logika deteksinya sendiri tidak disentuh.
  */
 
 import { FilesetResolver, HandLandmarker } from './vendor/vision_bundle.mjs';
 
-const CONNECTIONS = [
+export const CONNECTIONS = [
   [0, 1], [1, 2], [2, 3], [3, 4],
   [0, 5], [5, 6], [6, 7], [7, 8],
   [5, 9], [9, 10], [10, 11], [11, 12],
@@ -128,6 +129,15 @@ export class HandGestureController extends EventTarget {
     this._lastFrameAt = 0;
     this._recovering = false;
     this._starting = null;
+
+    /* Baca-saja, untuk mode uji. Ditulis sebagai properti, bukan lewat event,
+       karena mode uji membacanya di dalam loop gambarnya sendiri; menembakkan
+       event 30 kali per detik hanya akan memaksa render ulang sia-sia. */
+    this.lastHand = null;
+    this.fps = 0;
+    this.extended = 0;
+    this._fpsCount = 0;
+    this._fpsAt = 0;
   }
 
   /**
@@ -256,6 +266,9 @@ export class HandGestureController extends EventTarget {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this._lastVideoTime = -1;
     this._lastFrameAt = 0;
+    this.lastHand = null;
+    this.fps = 0;
+    this.extended = 0;
   }
 
   _startLoop() {
@@ -310,6 +323,16 @@ export class HandGestureController extends EventTarget {
 
     const result = this.landmarker.detectForVideo(this.video, performance.now());
     const hand = result.landmarks?.[0] ?? null;
+
+    this.lastHand = hand;
+    this._fpsCount++;
+    const tick = performance.now();
+    if (tick - this._fpsAt >= 1000) {
+      this.fps = this._fpsCount;
+      this._fpsCount = 0;
+      this._fpsAt = tick;
+    }
+    if (hand) this._isOpenPalm(hand);
 
     this._draw(hand);
     if (this.enabled) this._evaluate(hand);
@@ -467,6 +490,7 @@ export class HandGestureController extends EventTarget {
     for (const { tip, pip } of FINGERS) {
       if (dist(wrist, hand[tip]) > dist(wrist, hand[pip]) * CONFIG.extendRatio) extended++;
     }
+    this.extended = extended;
     return extended >= CONFIG.fingersForOpenPalm;
   }
 

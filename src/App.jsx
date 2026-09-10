@@ -8,6 +8,7 @@ import useGesture from './hooks/useGesture.js';
 import useCascade, { CASCADE } from './hooks/useCascade.js';
 import useMediaQuery, { TOUCH, PORTRAIT } from './hooks/useMediaQuery.js';
 import NotesSheet from './components/NotesSheet.jsx';
+import HandTest from './components/HandTest.jsx';
 
 const STAGE_W = 1280;
 const STAGE_H = 720;
@@ -51,6 +52,8 @@ export default function App() {
   const [toast, setToast] = useState(null);
   const [printing, setPrinting] = useState(false);
   const [sheet, setSheet] = useState(false);
+  const [test, setTest] = useState(false);
+  const [fire, setFire] = useState(null);
 
   const isTouch = useMediaQuery(TOUCH);
   const isPortrait = useMediaQuery(PORTRAIT);
@@ -60,8 +63,20 @@ export default function App() {
   const canvasRef = useRef(null);
   const notesWinRef = useRef(null);
 
-  const next = useCallback(() => dispatch({ type: 'next' }), []);
-  const prev = useCallback(() => dispatch({ type: 'prev' }), []);
+  /* Selama mode uji terbuka, geseran tidak memindahkan slide; ia hanya
+     dilaporkan, supaya gerakannya bisa dilatih tanpa mengacak posisi deck. */
+  const testRef = useRef(false);
+  testRef.current = test;
+
+  const next = useCallback(() => {
+    if (testRef.current) return setFire({ dir: 'next', at: Date.now() });
+    dispatch({ type: 'next' });
+  }, []);
+
+  const prev = useCallback(() => {
+    if (testRef.current) return setFire({ dir: 'prev', at: Date.now() });
+    dispatch({ type: 'prev' });
+  }, []);
 
   const gesture = useGesture({ videoRef, canvasRef, onNext: next, onPrev: prev, active: !__OFFLINE__ && !isTouch });
 
@@ -162,7 +177,7 @@ export default function App() {
         case 'ArrowLeft': case 'PageUp': e.preventDefault(); prev(); break;
         case 'Home': dispatch({ type: 'first' }); break;
         case 'End': dispatch({ type: 'last' }); break;
-        case 'Escape': setHelp(false); setCamZoom(false); setSheet(false); break;
+        case 'Escape': setHelp(false); setCamZoom(false); setSheet(false); setTest(false); break;
         case '?': case '/': setHelp((v) => !v); break;
         default: break;
       }
@@ -177,6 +192,11 @@ export default function App() {
         case 'c': setCamOn((v) => !v); break;
         case 'z': setCamZoom((v) => !v); break;
         case 'n': showNotes(); break;
+        case 't':
+          if (__OFFLINE__) say('Versi offline dibangun tanpa kamera. Pakai versi server untuk menguji gerakan tangan.');
+          else if (isTouch) say('Mode uji butuh kamera dan tetikus. Buka di laptop.');
+          else setTest((v) => !v);
+          break;
         case 'p': exportPdf(); break;
         case 'f':
           if (document.fullscreenElement) document.exitFullscreen();
@@ -187,7 +207,7 @@ export default function App() {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [next, prev, gesture, showNotes, exportPdf, say]);
+  }, [next, prev, gesture, showNotes, exportPdf, say, isTouch]);
 
   const progress = ((OFFSETS[i] + step + 1) / TOTAL_STEPS) * 100;
 
@@ -203,7 +223,7 @@ export default function App() {
   );
 
   return (
-    <div className={camZoom ? 'cam-zoom' : undefined} data-printing={printing ? 'true' : undefined}>
+    <div className={[camZoom ? 'cam-zoom' : '', test ? 'is-testing' : ''].filter(Boolean).join(' ') || undefined} data-printing={printing ? 'true' : undefined}>
       <div className="stage-wrap">
         <div className="stage" ref={stageRef}>
           {slides.map((s, idx) => (
@@ -270,6 +290,16 @@ export default function App() {
         </div>
       ) : null}
 
+      {test ? (
+        <HandTest
+          getHand={gesture.getHand}
+          getStats={gesture.getStats}
+          connections={gesture.connections}
+          fire={fire}
+          onClose={() => setTest(false)}
+        />
+      ) : null}
+
       {sheet ? (
         <NotesSheet
           no={i + 1}
@@ -317,6 +347,7 @@ export default function App() {
               <Row k={['Z']} v="Besarkan kamera untuk demo" />
               <Row k={['C']} v="Sembunyikan preview kamera" />
               <Row k={['N']} v="Catatan presenter" />
+              <Row k={['T']} v="Uji hand tracking" />
               <Row k={['P']} v="Ekspor PDF" icon={<FilePdf size={18} weight="light" />} />
               <Row k={['F']} v="Fullscreen" />
               <Row k={['?']} v="Buka / tutup bantuan ini" icon={<Question size={18} weight="light" />} />

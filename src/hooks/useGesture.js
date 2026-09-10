@@ -28,7 +28,9 @@ export default function useGesture({ videoRef, canvasRef, onNext, onPrev, active
   const [state, setState] = useState('loading');
   const [progress, setProgress] = useState(0);
   const [preset, setPreset] = useState('Normal');
+  const [connections, setConnections] = useState(null);
   const controllerRef = useRef(null);
+  const modRef = useRef(null);
 
   // Simpan callback di ref supaya controller tidak perlu dipasang ulang tiap
   // kali indeks slide berubah - membangun ulang model itu mahal.
@@ -55,6 +57,9 @@ export default function useGesture({ videoRef, canvasRef, onNext, onPrev, active
         return;
       }
       if (disposed || !videoRef.current || !canvasRef.current) return;
+
+      modRef.current = mod;
+      setConnections(mod.CONNECTIONS ?? null);
 
       controller = new mod.HandGestureController({
         video: videoRef.current,
@@ -87,10 +92,28 @@ export default function useGesture({ videoRef, canvasRef, onNext, onPrev, active
     };
   }, [active, videoRef, canvasRef]);
 
+  /* Dibaca langsung dari controller, bukan lewat state React: mode uji
+     memanggilnya di dalam loop gambarnya sendiri, jadi menaruh angka ini di
+     state hanya akan memicu render ulang 30 kali per detik. */
+  const getHand = useCallback(() => controllerRef.current?.lastHand ?? null, []);
+
+  const getStats = useCallback(() => {
+    const c = controllerRef.current;
+    if (!c) return { state: 'off', label: LABELS.off[0], preset: '-', fps: 0, extended: 0, progress: 0 };
+    return {
+      state: c.state,
+      label: (LABELS[c.state] ?? [c.state])[0],
+      preset: modRef.current?.PRESETS?.[c.preset]?.label ?? '-',
+      fps: c.fps ?? 0,
+      extended: c.extended ?? 0,
+      progress: c._progress ?? 0,
+    };
+  }, []);
+
   const toggle = useCallback(() => controllerRef.current?.toggle?.(), []);
   const cycleSensitivity = useCallback(() => controllerRef.current?.cycleSensitivity?.(), []);
   const retry = useCallback(() => controllerRef.current?.start?.(), []);
 
   const [label, tone] = LABELS[state] ?? [state, 'idle'];
-  return { state, label, tone, progress, preset, toggle, cycleSensitivity, retry };
+  return { state, label, tone, progress, preset, connections, getHand, getStats, toggle, cycleSensitivity, retry };
 }

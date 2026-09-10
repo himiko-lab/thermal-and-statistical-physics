@@ -962,3 +962,140 @@ body,
   .hud--touch,
   .sheet-scrim { display: none !important; }
 }
+
+/* ═════════════════════════════════════════════════════════════════════════
+   Mode uji hand tracking (tombol T).
+
+   Layar diisi kisi titik yang bereaksi terhadap tangan. Yang ingin
+   diperlihatkan bukan sekadar "terdeteksi atau tidak", melainkan jangkauan
+   dan kemulusannya: sudut layar yang titiknya tidak pernah bereaksi berarti
+   di luar bidang pandang kamera dari posisi presenter berdiri.
+   ═════════════════════════════════════════════════════════════════════════ */
+.test {
+  position: fixed;
+  inset: 0;
+  z-index: 75;
+  background: #060607;
+  font-family: var(--font-ui);
+}
+
+.test-canvas { position: absolute; inset: 0; }
+
+.test-panel {
+  position: absolute;
+  left: 26px;
+  top: 26px;
+  width: 288px;
+  padding: 18px 20px 16px;
+  border: 1px solid var(--gold-line);
+  border-radius: 6px;
+  background: rgba(10, 10, 11, 0.72);
+  backdrop-filter: blur(10px);
+}
+
+.test-title {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 14px;
+}
+
+.test-stats {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 7px 16px;
+  margin: 0 0 14px;
+  font-size: 13px;
+}
+
+.test-stats dt { color: var(--ink-4); }
+
+.test-stats dd {
+  margin: 0;
+  text-align: right;
+  color: var(--ink-3);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12.5px;
+}
+
+.test-stats dd.ok { color: var(--gold); }
+.test-stats dd.warn { color: #e08a5a; }
+
+.test-bar {
+  height: 2px;
+  background: rgba(255, 255, 255, 0.09);
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+
+.test-bar > div {
+  height: 100%;
+  width: 100%;
+  background: var(--gold);
+  transform-origin: left center;
+  transform: scaleX(0);
+  transition: transform 90ms linear;
+}
+
+.test-help {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ink-4);
+}
+
+.test-fire {
+  position: absolute;
+  left: 50%;
+  bottom: 84px;
+  transform: translate(-50%, 8px);
+  padding: 10px 20px;
+  border: 1px solid var(--gold-line);
+  border-radius: 4px;
+  background: rgba(10, 10, 11, 0.8);
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  color: var(--gold);
+  opacity: 0;
+  transition: opacity 260ms var(--ease), transform 260ms var(--ease);
+  pointer-events: none;
+}
+
+.test-fire.is-on { opacity: 1; transform: translate(-50%, 0); }
+
+.test-keys {
+  position: absolute;
+  left: 50%;
+  bottom: 26px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 22px;
+  font-size: 12px;
+  color: var(--ink-4);
+  white-space: nowrap;
+}
+
+.test-keys b {
+  display: inline-block;
+  min-width: 20px;
+  padding: 2px 6px;
+  margin-right: 5px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.05);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  font-weight: 400;
+  text-align: center;
+  color: var(--ink-3);
+}
+
+/* Preview kamera diangkat ke atas lapisan uji dan dinyalakan penuh, supaya
+   presenter tetap bisa melihat posisi tangannya sendiri. */
+.is-testing .hud--cam { z-index: 90; opacity: 1; }
+
+@media print {
+  .test { display: none !important; }
+}

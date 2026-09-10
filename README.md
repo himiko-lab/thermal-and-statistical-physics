@@ -67,6 +67,7 @@ npm run build:offline
 | `Home` `End` | Slide pertama / terakhir |
 | `H` | Matikan / nyalakan hand tracking dan kamera |
 | `S` | Ganti sensitivitas (Tenang / Normal / Sensitif) |
+| `T` | Mode uji hand tracking |
 | `Z` | Besarkan kamera di tengah layar untuk demo |
 | `C` | Sembunyikan preview kamera |
 | `N` | Buka jendela catatan presenter |
@@ -88,6 +89,25 @@ mendarat paling akhir. Klik sekali lalu diam sekitar dua detik.
 
 `H` adalah pengaman utama. Kalau deteksi mulai kacau karena cahaya aneh atau
 backlight jendela, tekan `H` sekali dan lanjut pakai panah.
+
+### Mode uji (tombol `T`)
+
+Layar diisi kisi titik yang bereaksi terhadap tangan: yang dekat menyala emas,
+membesar, dan terdorong menjauh. Ini yang membuatnya berguna dipakai di ruangan
+sungguhan sebelum presentasi.
+
+- **Sudut layar yang titiknya tidak pernah bereaksi** berarti tangan Anda sudah
+  di luar bidang pandang kamera dari posisi itu. Mundur atau geser laptopnya.
+- **Reaksi yang tersendat** berarti pencahayaannya kurang, atau ada backlight
+  dari jendela di belakang Anda.
+- Panel kiri atas menampilkan status, preset sensitivitas, frame per detik, dan
+  berapa jari yang terbaca terentang. Di bawah 20 fps angkanya berubah jingga.
+- **Geseran tidak memindahkan slide** selama mode ini terbuka, hanya dilaporkan
+  di tengah bawah. Jadi gerakannya bisa dilatih berulang tanpa mengacak posisi
+  deck.
+
+Tekan `S` untuk mencoba preset lain tanpa keluar, `H` untuk mematikan kamera,
+`T` atau `Esc` untuk kembali ke deck.
 
 Kode deteksinya (`public/gesture.js`) disalin dari deck Sensatype. Logika
 deteksinya tidak disentuh, karena sudah melewati penyetelan di ruangan
