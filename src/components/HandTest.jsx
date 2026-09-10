@@ -87,21 +87,40 @@ export default function HandTest({ getHand, getStats, connections, fire, onClose
       }
 
       if (hand && connections) {
-        ctx.strokeStyle = 'rgba(239, 194, 94, 0.75)';
-        ctx.lineWidth = 2;
-        ctx.lineCap = 'round';
-        for (const [a, b] of connections) {
+        // Tangannya dibentuk dari titik, bukan garis. Tiap tulang diisi titik
+        // kecil berjarak tetap, jadi kerapatannya ikut menyesuaikan panjang
+        // tulang di layar: makin dekat tangan ke kamera, makin banyak titik.
+        const px = (p) => [(1 - p.x) * w, p.y * h];
+
+        const titikEmas = (x, y, r, alpha) => {
           ctx.beginPath();
-          ctx.moveTo((1 - hand[a].x) * w, hand[a].y * h);
-          ctx.lineTo((1 - hand[b].x) * w, hand[b].y * h);
-          ctx.stroke();
-        }
-        ctx.fillStyle = '#efc25e';
-        for (const p of hand) {
-          ctx.beginPath();
-          ctx.arc((1 - p.x) * w, p.y * h, 3, 0, Math.PI * 2);
+          ctx.arc(x, y, r * 2.8, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(239, 194, 94, ${alpha * 0.11})`;
           ctx.fill();
+          ctx.beginPath();
+          ctx.arc(x, y, r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(239, 194, 94, ${alpha})`;
+          ctx.fill();
+        };
+
+        for (const [a, b] of connections) {
+          const [x1, y1] = px(hand[a]);
+          const [x2, y2] = px(hand[b]);
+          const jarak = Math.hypot(x2 - x1, y2 - y1);
+          const jumlah = Math.max(2, Math.round(jarak / 15));
+          for (let i = 1; i < jumlah; i++) {
+            const t = i / jumlah;
+            titikEmas(x1 + (x2 - x1) * t, y1 + (y2 - y1) * t, 1.9, 0.5);
+          }
         }
+
+        // Sendi lebih besar, ujung jari paling besar, supaya arah tangannya
+        // langsung terbaca tanpa garis penghubung.
+        hand.forEach((p, i) => {
+          const [x, y] = px(p);
+          const ujung = i === 4 || i === 8 || i === 12 || i === 16 || i === 20;
+          titikEmas(x, y, ujung ? 4.6 : 3.2, 1);
+        });
       }
 
       // Angka diagnostik cukup disegarkan beberapa kali per detik.

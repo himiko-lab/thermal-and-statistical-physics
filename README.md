@@ -93,8 +93,11 @@ backlight jendela, tekan `H` sekali dan lanjut pakai panah.
 ### Mode uji (tombol `T`)
 
 Layar diisi kisi titik yang bereaksi terhadap tangan: yang dekat menyala emas,
-membesar, dan terdorong menjauh. Ini yang membuatnya berguna dipakai di ruangan
-sungguhan sebelum presentasi.
+membesar, dan terdorong menjauh. Tangannya sendiri juga digambar dari titik,
+bukan garis: sendi lebih besar, ujung jari paling besar, dan tulangnya diisi
+titik kecil berjarak tetap sehingga kerapatannya ikut menyesuaikan jarak tangan
+ke kamera. Ini yang membuatnya berguna dipakai di ruangan sungguhan sebelum
+presentasi.
 
 - **Sudut layar yang titiknya tidak pernah bereaksi** berarti tangan Anda sudah
   di luar bidang pandang kamera dari posisi itu. Mundur atau geser laptopnya.
