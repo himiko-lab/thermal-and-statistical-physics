@@ -241,7 +241,7 @@ Tambah satu objek di array paling bawah `src/content/slides.jsx`. **Selalu
   className: 'slide--center',      // opsional, default rata atas
   render: ({ step, phase, no, total }) => (
     <>
-      <SlideHead eyebrow="05 · Taksonomi" no={no} total={total} />
+      <SlideHead eyebrow="05 · Proses Termodinamika" no={no} total={total} />
       <h2 className="h2">Judul slide</h2>
 
       {/* muncul saat klik kedua */}

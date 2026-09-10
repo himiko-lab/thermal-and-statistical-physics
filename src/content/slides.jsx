@@ -100,7 +100,7 @@ const PETA = [
   { n: '02', Icon: Package, t: 'Entalpi', s: 'Fungsi keadaan untuk proses bertekanan tetap' },
   { n: '03', Icon: ArrowLineUp, t: 'Mengapa CP > CV', s: 'Ke mana kalor pergi saat sistem boleh memuai' },
   { n: '04', Icon: Scales, t: 'Kalorimetri', s: 'Kekekalan energi di dalam sistem terisolasi' },
-  { n: '05', Icon: FlowArrow, t: 'Taksonomi Proses', s: 'Isotermal, adiabatik, dan kerabat-kerabatnya' },
+  { n: '05', Icon: FlowArrow, t: 'Proses Termodinamika', s: 'Isotermal, adiabatik, dan kerabat-kerabatnya' },
   { n: '06', Icon: ArrowsClockwise, t: 'Ideal dan Nyata', s: 'Quasi-statis, reversibel, ireversibel' },
 ];
 
@@ -599,7 +599,7 @@ const kalorimetri = {
   ),
 };
 
-/* ═════════════════════════════════════════════════════ 11. taksonomi proses */
+/* ═══════════════════════════════════════════════ 11. proses termodinamika */
 const PROSES = [
   { n: 'Isotermal', Icon: Thermometer, eq: <>d<V>T</V> = 0</>, s: <><V>PV</V> = konstan</> },
   { n: 'Adiabatik', Icon: Snowflake, eq: <>d<V>Q</V> = 0</>, s: <><V>PV</V><sup>γ</sup> = konstan</> },
@@ -609,13 +609,13 @@ const PROSES = [
   { n: 'Siklik', Icon: ArrowsClockwise, eq: <>Δ<V>U</V> = 0</>, s: 'kerja neto = luas kurva' },
 ];
 
-const taksonomi = {
-  id: 'taksonomi',
-  title: 'Taksonomi proses',
+const proses = {
+  id: 'proses',
+  title: 'Proses Termodinamika',
   steps: 2,
   render: ({ step, no, total }) => (
     <>
-      <SlideHead eyebrow="05 · Taksonomi" no={no} total={total} />
+      <SlideHead eyebrow="05 · Proses Termodinamika" no={no} total={total} />
       <h2 className="h2">Enam proses, satu kerangka</h2>
       <p className="tiny" style={{ marginBottom: 24 }}>
         <span className="gold">Konvensi 1</span> dipakai sepanjang bab ini: <V>dW</V> = &minus;<V>P</V>d<V>V</V>.
@@ -643,7 +643,7 @@ const adiabatik = {
   steps: 2,
   render: ({ step, phase, no, total }) => (
     <>
-      <SlideHead eyebrow="05 · Taksonomi" no={no} total={total} />
+      <SlideHead eyebrow="05 · Proses Termodinamika" no={no} total={total} />
       <h2 className="h2">Kenapa adiabatik lebih curam</h2>
 
       <div style={{ display: 'grid', gridTemplateColumns: '524px 1fr', gap: 40, alignItems: 'center', marginTop: 6 }}>
@@ -698,7 +698,7 @@ const kasus = {
   steps: 2,
   render: ({ step, no, total }) => (
     <>
-      <SlideHead eyebrow="05 · Taksonomi" no={no} total={total} />
+      <SlideHead eyebrow="05 · Proses Termodinamika" no={no} total={total} />
       <h2 className="h2">Empat kasus khusus</h2>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px 52px' }}>
@@ -819,7 +819,7 @@ const penutup = {
 
 export const slides = [
   sampul, peta, definisi, cvcp, sifat, entalpi, turunan, molar,
-  kenapa, contoh, kalorimetri, taksonomi, adiabatik, kasus, nyata, penutup,
+  kenapa, contoh, kalorimetri, proses, adiabatik, kasus, nyata, penutup,
 ];
 
 export default slides;

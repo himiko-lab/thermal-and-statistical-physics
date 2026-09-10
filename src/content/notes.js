@@ -216,7 +216,7 @@ export const notes = {
   },
 
   /* ────────────────────────────────────────────────────────── 12 */
-  taksonomi: {
+  proses: {
     target: 60,
     notes: [
       'Enam proses ini adalah kerangka untuk sisa pembahasan.',
